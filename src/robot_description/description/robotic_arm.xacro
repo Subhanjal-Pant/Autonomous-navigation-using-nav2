@@ -1,0 +1,381 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+    
+
+<!-- 
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+    <material name="blue">
+        <color rgba="0 0 1 1"/>
+    </material>
+    <material name="green">
+        <color rgba="0 0 0 1"/>
+    </material> -->
+
+    <xacro:property name="box_x" value="0.3"/>
+    <xacro:property name="box_y" value="0.2"/>
+    <xacro:property name="box_z" value="0.05"/>
+
+    <xacro:property name="wheel_radius" value="0.05"/>
+    <xacro:property name="wheel_length" value="0.03"/>
+   
+    <xacro:property name="caster_wheel_radius" value="0.025"/>
+
+    <xacro:property name="box_mass" value="0.5"/>
+    <xacro:property name="wheel_mass" value="0.1"/>
+    <xacro:property name="caster_wheel_mass" value="0.05"/>
+
+    <xacro:property name="lidar_radius" value="0.03"/>
+    <xacro:property name="lidar_length" value="0.03"/>
+
+
+
+    <xacro:property name="link_one_base_radius" value="0.05"/>
+    <xacro:property name="link_one_base_length" value="0.025"/>
+
+    <xacro:property name="link_two_length" value="0.3"/>
+    <xacro:property name="link_three_length" value="0.2"/>
+    <xacro:property name="link_two_width" value="0.03"/>
+    <xacro:property name="link_two_thickness" value="0.015"/>
+
+
+
+    <xacro:property name="holder_x" value="0.05"/>
+    <xacro:property name="holder_y" value="0.015"/>
+    <xacro:property name="holder_z" value="0.05"/>
+
+    <xacro:property name="finger_length" value="0.05"/>
+    <xacro:property name="finger_width" value="0.01"/>
+    <xacro:property name="finger_thickness" value="0.01"/>
+
+    <xacro:property name="link_one_mass" value="0.05"/>
+    <xacro:property name="link_two_mass" value="0.15"/>
+    <xacro:property name="link_three_mass" value="0.15"/>
+    <xacro:property name="link_four_mass" value="0.05"/>
+    <xacro:property name="finger_mass" value="0.01"/>
+    <xacro:property name="holder_mass" value="0.01"/>
+
+    
+    <link name="link_one">
+        <visual>
+            <geometry>
+                <cylinder radius="${link_one_base_radius}" length="${link_one_base_length}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${link_one_base_radius}" length="${link_one_base_length}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
+        <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="${link_one_mass}"/>
+        <inertia 
+            ixx="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
+            ixy="0.0" 
+            ixz="0.0" 
+            iyy="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
+            iyz="0.0" 
+            izz="${(1/2) * link_one_mass * link_one_base_radius**2}"/>
+        </inertial>
+    </link>
+
+    <joint name="link_one_joint" type="continuous">
+        <parent link="chassis"/>
+        <child link="link_one"/>
+        <origin xyz='0 0 ${box_z/2+link_one_base_length/2}' rpy='0 0 0'/>
+        <axis xyz="0 0 1"/>
+
+    </joint>
+
+
+
+    <link name="holder_one">
+        <visual>
+            <geometry>
+                <box size="${holder_x} ${holder_y} ${holder_z}"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${holder_x} ${holder_y} ${holder_z}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${holder_mass}"/>
+            <inertia 
+                ixx="${(1/12) * holder_mass * (holder_y*holder_y + holder_z*holder_z)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(1/12) * holder_mass * (holder_x*holder_x + holder_z*holder_z)}" 
+                iyz="0.0" 
+                izz="${(1/12) * holder_mass * (holder_x*holder_x + holder_y*holder_y)}"/>
+        </inertial>
+    </link> 
+
+
+    <link name="holder_two">
+        <visual>
+            <geometry>
+                <box size="${holder_x} ${holder_y} ${holder_z}"/>
+            </geometry>
+            <material name="white"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${holder_x} ${holder_y} ${holder_z}"/>
+            </geometry>
+            <material name="white"/>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${holder_mass}"/>
+            <inertia 
+                ixx="${(1/12) * holder_mass * (holder_y*holder_y + holder_z*holder_z)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(1/12) * holder_mass * (holder_x*holder_x + holder_z*holder_z)}" 
+                iyz="0.0" 
+                izz="${(1/12) * holder_mass * (holder_x*holder_x + holder_y*holder_y)}"/>
+        </inertial>
+
+    </link> 
+
+    <joint name="holder_joint_one" type="fixed">
+        <parent link="link_one"/>
+        <child link="holder_one"/>
+        <origin xyz='0 ${link_one_base_radius/3} ${link_one_base_length/2 + holder_z/2}' rpy='0 0 0'/>
+    </joint> 
+    
+    <joint name="holder_joint_two" type="fixed">
+        <parent link="link_one"/>
+        <child link="holder_two"/>
+        <origin xyz='0 ${-link_one_base_radius/3} ${link_one_base_length/2 + holder_z/2}' rpy='0 0 0'/>
+    </joint> 
+
+
+    <link name="link_two">
+        <visual>
+            <geometry>
+                <box size="${link_two_width} ${link_two_thickness} ${link_two_length}"/>
+            </geometry>
+            <material name="blue"/>
+        <origin xyz="0 0 ${link_two_length/2}" rpy="0 0 0"/>
+
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${link_two_width} ${link_two_thickness} ${link_two_length}"/>
+            </geometry>
+            <material name="blue"/>
+        <origin xyz="0 0 ${link_two_length/2}" rpy="0 0 0"/>
+
+        </collision>
+        <inertial>
+        <origin xyz="0 0 ${link_two_length/2}" rpy="0 0 0"/>
+        <mass value="${link_two_mass}"/>
+        <inertia 
+            ixx="${(1/12) * link_two_mass * (link_two_thickness*link_two_thickness + link_two_length*link_two_length)}" 
+            ixy="0.0" 
+            ixz="0.0" 
+            iyy="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_length*link_two_length)}" 
+            iyz="0.0" 
+            izz="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
+        </inertial>
+
+    </link>
+
+    <joint name="link_two_joint" type="revolute">
+        <parent link='holder_one'/>
+        <child link='link_two'/>
+        <origin xyz="0 ${-holder_y} 0" rpy="0 0 0" />
+        <axis xyz="0 1 0"/>
+        <limit lower="-1.5708" upper="1.5708" effort="10.0" velocity="1.0"/>    
+    </joint>
+
+    <link name="link_three">
+        <visual>
+            <geometry>
+                <box size="${link_two_width} ${link_two_thickness} ${link_three_length}"/>
+            </geometry>
+            <material name="red"/>
+        <origin xyz="0 0 ${link_three_length/2}" rpy="0 0 0"/>
+
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${link_two_width} ${link_two_thickness} ${link_three_length}"/>
+            </geometry>
+            <material name="red"/>
+        <origin xyz="0 0 ${link_three_length/2}" rpy="0 0 0"/>
+
+        </collision>
+        <inertial>
+        <origin xyz="0 0 ${link_three_length/2}" rpy="0 0 0"/>
+        <mass value="${link_three_mass}"/>
+        <inertia 
+            ixx="${(1/12) * link_three_mass * (link_two_thickness*link_two_thickness + link_three_length*link_three_length)}" 
+            ixy="0.0" 
+            ixz="0.0" 
+            iyy="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_three_length*link_three_length)}" 
+            iyz="0.0" 
+            izz="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
+        </inertial>
+
+
+    </link>
+
+    <joint name="link_three_joint" type="revolute">
+        <parent link='link_two'/>
+        <child link='link_three'/>
+        <origin xyz="0 ${link_two_thickness} ${link_two_length-0.03}" rpy="0 0 0" />
+        <axis xyz="0 1 0"/>
+        <limit lower="-1.5708" upper="1.5708" effort="10.0" velocity="1.0"/>    
+    </joint>
+
+   <link name="link_four">
+        <!-- Define local properties for box dimensions based on cylinder mapping -->
+        <!-- Map diameter (2*radius) to Box Width/Depth to keep horizontal size -->
+        <xacro:property name="l4_box_width" value= "0.05"/>
+        <xacro:property name="l4_box_depth" value="0.07" />
+        <!-- Map length to Box Height -->
+        <xacro:property name="l4_box_height" value="${link_one_base_length / 2.0}" />
+
+        <visual>
+            <geometry>
+                <!-- Changed from cylinder to box -->
+                <box size="${l4_box_width} ${l4_box_depth} ${l4_box_height}"/>
+            </geometry>
+            <material name='white'/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </visual>
+        <collision>
+            <geometry>
+                <!-- Changed from cylinder to box -->
+                <box size="${l4_box_width} ${l4_box_depth} ${l4_box_height}"/>
+            </geometry>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${link_four_mass}"/>
+            <!-- Updated inertia calculations for a standard rectangular prism -->
+            <inertia 
+                ixx="${(1/12) * link_four_mass * (l4_box_depth**2 + l4_box_height**2)}" 
+                ixy="0.0" ixz="0.0" 
+                iyy="${(1/12) * link_four_mass * (l4_box_width**2 + l4_box_height**2)}" 
+                iyz="0.0" 
+                izz="${(1/12) * link_four_mass * (l4_box_width**2 + l4_box_depth**2)}"/>
+        </inertial>
+    </link>
+
+    <joint name="link_four_joint" type='continuous'>
+        <parent link="link_three"/>
+        <child link="link_four"/>
+        <origin xyz="0 0 ${link_three_length}" rpy='0 0 0'/>
+        <axis xyz="0 0 1" />
+    </joint>
+
+  <link name="left_finger">
+        <visual>
+            <geometry>
+                <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+            </geometry>
+            <material name="white"/>
+            <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+            </geometry>
+            <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+        </collision>
+       <inertial>
+            <origin xyz="0 0 ${finger_length/2}" rpy="0 0 0"/>
+            <mass value="${finger_mass}"/>
+            <inertia 
+                ixx="${(1/12) * finger_mass * (finger_thickness*finger_thickness + finger_length*finger_length)}" 
+                ixy="0.0" ixz="0.0" 
+                iyy="${(1/12) * finger_mass * (finger_width*finger_width + finger_length*finger_length)}" 
+                iyz="0.0" 
+                izz="${(1/12) * finger_mass * (finger_width*finger_width + finger_thickness*finger_thickness)}"/>
+        </inertial>
+    </link>
+
+    <joint name="left_finger_joint" type="prismatic">
+        <parent link="link_four"/>
+        <child link="left_finger"/>
+        <origin xyz="0 ${finger_width/2} ${link_one_base_length/4}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="0.003" upper="0.02" effort="10.0" velocity="1.0"/>
+    </joint>
+
+    <link name="right_finger">
+        <visual>
+            <geometry>
+                <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+            </geometry>
+            <material name="white"/>
+            <origin xyz="0 ${finger_width/2} ${finger_length/2}" rpy="0 0 0"/>
+        </visual>
+        <collision>
+            <geometry>
+                <box size="${finger_width} ${finger_thickness} ${finger_length}"/>
+            </geometry>
+            <origin xyz="0 ${finger_width/2} ${finger_length/2}" rpy="0 0 0"/>
+        </collision>
+        <inertial>
+            <origin xyz="0 ${finger_width/2} ${finger_length/2}" rpy="0 0 0"/>
+            <mass value="${finger_mass}"/>
+            <inertia 
+                ixx="${(1/12) * finger_mass * (finger_thickness*finger_thickness + finger_length*finger_length)}" 
+                ixy="0.0" ixz="0.0" 
+                iyy="${(1/12) * finger_mass * (finger_width*finger_width + finger_length*finger_length)}" 
+                iyz="0.0" 
+                izz="${(1/12) * finger_mass * (finger_width*finger_width + finger_thickness*finger_thickness)}"/>
+        </inertial>
+    </link>
+
+    <joint name="right_finger_joint" type="prismatic">
+        <mimic joint="left_finger_joint" multiplier="-1.0" offset="0"/> 
+        <parent link="link_four"/>
+        <child link="right_finger"/>
+        <origin xyz="0 ${-finger_width/2} ${link_one_base_length/4}" rpy="0 0 0"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-0.02" upper="0.003" effort="10.0" velocity="1.0"/>
+    </joint>
+    <link name="camera_gripper_link">
+        <visual>
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+                <material name="blue"/>
+                <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            </geometry>
+        </visual>
+    </link>
+    <joint name="camera_gripper_joint" type="fixed">
+        <parent link="link_four" />
+        <child link="camera_gripper_link" />
+        <origin xyz="${-l4_box_width/2-0.01/2} 0 0" rpy="0 0 0"/>
+    </joint>
+    <link name="torch_gripper_link">
+        <visual>
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+                <material name="blue"/>
+                <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            </geometry>
+        </visual>
+    </link>
+    <joint name="torch_gripper_joint" type="fixed">
+        <parent link="link_four" />
+        <child link="torch_gripper_link" />
+        <origin xyz="${-l4_box_width/2+0.01} 0 ${l4_box_height}" rpy="0 0 0"/>
+    </joint>
+ 
+</robot>
