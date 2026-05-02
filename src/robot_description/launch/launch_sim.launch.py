@@ -51,14 +51,20 @@ def generate_launch_description():
     joint_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=['diff_cont'],
+        arguments=['joint_broad'],
     )
     diff_drive_spawner=Node(
         package="controller_manager",
         executable="spawner",
-        arguments=['joint_broad']
+        arguments=['diff_cont']
     )
-
+    teleop_node=Node(
+        package="teleop_twist_keyboard",
+        executable="teleop_twist_keyboard",
+        name="teleop_node",
+        prefix="xterm -e", 
+        remappings=[('/cmd_vel', '/diff_cont/cmd_vel')]
+    )
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -67,5 +73,6 @@ def generate_launch_description():
         gazebo,
         spawn_entity,
         joint_broadcaster_spawner,
-        diff_drive_spawner
+        diff_drive_spawner,
+        teleop_node
     ])
