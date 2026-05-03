@@ -12,7 +12,8 @@ def generate_launch_description():
     xacro_file=os.path.join(pkg_path, "description", "robot.urdf.xacro")
     robot_description_config=xacro.process_file(xacro_file).toxml()
     rviz_config_path=os.path.join(pkg_path, 'config', 'saved_config.rviz')
-
+    gazebo_world_path=os.path.join(pkg_path, 'worlds', 'final_world')
+    print(gazebo_world_path)
     robot_state_publisher=Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -45,7 +46,11 @@ def generate_launch_description():
         package='gazebo_ros',
         executable='spawn_entity.py',
         arguments=['-topic', 'robot_description', 
-                   '-entity', 'diff_drive_robot'],
+                   '-entity', 'diff_drive_robot_at_origin', 
+                   '-x', '0', 
+                   '-y', '0',
+                   '-z', '0.2'
+                   ],
         output='screen'
     )
     joint_broadcaster_spawner = Node(
@@ -69,17 +74,23 @@ def generate_launch_description():
         }],
         remappings=[('/cmd_vel', '/diff_cont/cmd_vel')]
     )
-
+    gazebo_world = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(
+            get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+        launch_arguments={'world': gazebo_world_path}.items() # This is the key line
+    )
 # ros2 run teleop_twist_keyboard teleop_twist_keyboard
+# pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
 
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
         # joint_state_publisher,
         # joint_state_publisher_gui,
-        gazebo,
+        # gazebo,
         spawn_entity,
         joint_broadcaster_spawner,
         diff_drive_spawner,
-        teleop_node
+        teleop_node,
+        gazebo_world
     ])

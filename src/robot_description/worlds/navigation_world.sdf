@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="default">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- If you have custom walls/obstacles, add them below as simple <include> or <model> tags -->
+    <!-- DO NOT ADD ANY <plugin> TAGS HERE -->
+
+  </world>
+</sdf>
