@@ -63,8 +63,15 @@ def generate_launch_description():
         executable="teleop_twist_keyboard",
         name="teleop_node",
         prefix="xterm -e", 
+        parameters=[{
+            'stamped':True,
+            'frame_id':'base_link'
+        }],
         remappings=[('/cmd_vel', '/diff_cont/cmd_vel')]
     )
+
+# ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,

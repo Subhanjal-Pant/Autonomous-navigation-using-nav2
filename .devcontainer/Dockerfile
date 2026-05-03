@@ -17,6 +17,8 @@ RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
         nano \ 
         vim \
         git \
+        xterm \
+        x11-apps \
         bash-completion \
         python3-argcomplete \
         ros-humble-gazebo-ros-pkgs \
