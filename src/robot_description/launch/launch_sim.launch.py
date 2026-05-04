@@ -13,6 +13,8 @@ def generate_launch_description():
     robot_description_config=xacro.process_file(xacro_file).toxml()
     rviz_config_path=os.path.join(pkg_path, 'config', 'saved_config.rviz')
     gazebo_world_path=os.path.join(pkg_path, 'worlds', 'final_world')
+    gazebo_world_path_minimal=os.path.join(pkg_path, 'worlds', 'minimal_world')
+
     print(gazebo_world_path)
     robot_state_publisher=Node(
         package='robot_state_publisher',
@@ -39,8 +41,13 @@ def generate_launch_description():
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui'
     )
+    # Spawns the bot in empty world
     gazebo=IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+        launch_arguments={
+            'extra_gazebo_args': '--ros-args -- --no-audio',
+            'world': gazebo_world_path_minimal
+        }.items()
     )
     spawn_entity=Node(
         package='gazebo_ros',
