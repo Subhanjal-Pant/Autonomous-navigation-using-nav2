@@ -35,6 +35,7 @@ RUN if ! id -u $USER_UID >/dev/null 2>&1; then \
         ros-humble-diff-drive-controller \
         ros-humble-joint-state-broadcaster \
         ros-humble-xacro \
+        ros-humble-twist-mux \
         ros-humble-rmw-cyclonedds-cpp \
     && echo "$USERNAME ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME \
