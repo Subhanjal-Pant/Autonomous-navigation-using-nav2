@@ -9,13 +9,14 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
-    pkg_path=get_package_share_directory('robot_description')
-    xacro_file=os.path.join(pkg_path, "description", "robot.urdf.xacro")
-    robot_description_config=xacro.process_file(xacro_file).toxml()
-    rviz_config_path=os.path.join(pkg_path, 'config', 'saved_config.rviz')
-    gazebo_world_path=os.path.join(pkg_path, 'worlds', 'final_world')
-    gazebo_world_path_minimal=os.path.join(pkg_path, 'worlds', 'minimal_world')
+    pkg_path = get_package_share_directory('robot_description')
+    xacro_file = os.path.join(pkg_path, "description", "robot.urdf.xacro")
+    robot_description_config = xacro.process_file(xacro_file).toxml()
+    rviz_config_path = os.path.join(pkg_path, 'config', 'saved_config.rviz')
+    gazebo_world_path = os.path.join(pkg_path, 'worlds', 'final_world')
+    gazebo_world_path_minimal = os.path.join(pkg_path, 'worlds', 'minimal_world')
     slam_toolbox_config = os.path.join(pkg_path, 'config', 'mapper_params_online_async.yaml')
+    map_file_path = os.path.join(pkg_path, 'maps', 'map_save.yaml')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
@@ -75,6 +76,8 @@ def generate_launch_description():
         executable="spawner",
         arguments=['diff_cont']
     )
+    
+    # ros2 run teleop_twist_keyboard teleop_twist_keyboard
     teleop_node=Node(
         package="teleop_twist_keyboard",
         executable="teleop_twist_keyboard",
@@ -107,9 +110,27 @@ def generate_launch_description():
     }.items()
     )
 
-# ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
 # ros2 run nav2_map_server map_server --ros-args -p yaml_filename:map_save.yaml -p use_sim_time:=true
+    lifecycle_manager_node = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_map_server',
+        output='screen',
+        parameters=[
+            {'use_sim_time': True},
+            {'autostart': True},
+            {'node_names': ['map_server']}
+        ]
+    )
+    # ros2 run nav2_util lifecycle_bringup map_server
+    map_server_node= Node(
+            package='nav2_map_server',
+            executable='map_server',
+            name='map_server',
+            output='screen',
+            parameters=[{'yaml_filename': map_file_path}]
+        )
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -121,5 +142,7 @@ def generate_launch_description():
         diff_drive_spawner,
         teleop_node,
         gazebo_world,
-        slam_toolbox_node
+        slam_toolbox_node,
+        lifecycle_manager_node,
+        map_server_node
     ])
