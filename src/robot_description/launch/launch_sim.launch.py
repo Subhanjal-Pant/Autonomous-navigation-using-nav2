@@ -82,7 +82,10 @@ def generate_launch_description():
         prefix="xterm -e", 
         parameters=[{
             'stamped':True,
-            'frame_id':'base_link'
+            'frame_id':'base_link',
+            'speed': 0.3,
+            'turn':0.5,
+            'repeat_rate':10.0
         }],
         remappings=[('/cmd_vel', '/diff_cont/cmd_vel')]
     )
@@ -106,7 +109,7 @@ def generate_launch_description():
 
 # ros2 run teleop_twist_keyboard teleop_twist_keyboard
 # pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
-
+# ros2 run nav2_map_server map_server --ros-args -p yaml_filename:map_save.yaml -p use_sim_time:=true
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
