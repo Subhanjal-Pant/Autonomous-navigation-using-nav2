@@ -54,6 +54,23 @@
                 <state_interface name="velocity"/>
                 <state_interface name="position"/>
             </joint>
+
+            <!-- For Arm -->
+            <joint name="link_one_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="link_two_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="link_one_joint">
+                <command_interface name="position"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
         </ros2_control>
     </xacro:if>
 

@@ -76,6 +76,13 @@ def generate_launch_description():
         executable="spawner",
         arguments=['diff_cont']
     )
+    arm_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["arm_controller"],
+    )   
+
+# Add arm_spawner to your return LaunchDescription([...])
     
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard
     teleop_node=Node(
@@ -140,6 +147,7 @@ def generate_launch_description():
         spawn_entity,
         joint_broadcaster_spawner,
         diff_drive_spawner,
+        arm_spawner,
         teleop_node,
         gazebo_world,
         slam_toolbox_node,

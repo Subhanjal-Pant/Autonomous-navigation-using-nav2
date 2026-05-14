@@ -2,8 +2,8 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
     
 
-<!-- 
-    <material name="red">
+
+    <!-- <material name="red">
         <color rgba="1 0 0 1"/>
     </material>
     <material name="blue">
@@ -71,15 +71,15 @@
             <origin xyz="0 0 0" rpy="0 0 0"/>
         </collision>
         <inertial>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <mass value="${link_one_mass}"/>
-        <inertia 
-            ixx="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
-            ixy="0.0" 
-            ixz="0.0" 
-            iyy="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
-            iyz="0.0" 
-            izz="${(1/2) * link_one_mass * link_one_base_radius**2}"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="${link_one_mass}"/>
+            <inertia 
+                ixx="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(1/12) * link_one_mass * (3 * link_one_base_radius**2 + link_one_base_length**2)}" 
+                iyz="0.0" 
+                izz="${(1/2) * link_one_mass * link_one_base_radius**2}"/>
         </inertial>
     </link>
 
@@ -177,15 +177,15 @@
 
         </collision>
         <inertial>
-        <origin xyz="0 0 ${link_two_length/2}" rpy="0 0 0"/>
-        <mass value="${link_two_mass}"/>
-        <inertia 
-            ixx="${(1/12) * link_two_mass * (link_two_thickness*link_two_thickness + link_two_length*link_two_length)}" 
-            ixy="0.0" 
-            ixz="0.0" 
-            iyy="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_length*link_two_length)}" 
-            iyz="0.0" 
-            izz="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
+            <origin xyz="0 0 ${link_two_length/2}" rpy="0 0 0"/>
+            <mass value="${link_two_mass}"/>
+            <inertia 
+                ixx="${(1/12) * link_two_mass * (link_two_thickness*link_two_thickness + link_two_length*link_two_length)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_length*link_two_length)}" 
+                iyz="0.0" 
+                izz="${(1/12) * link_two_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
         </inertial>
 
     </link>
@@ -216,18 +216,16 @@
 
         </collision>
         <inertial>
-        <origin xyz="0 0 ${link_three_length/2}" rpy="0 0 0"/>
-        <mass value="${link_three_mass}"/>
-        <inertia 
-            ixx="${(1/12) * link_three_mass * (link_two_thickness*link_two_thickness + link_three_length*link_three_length)}" 
-            ixy="0.0" 
-            ixz="0.0" 
-            iyy="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_three_length*link_three_length)}" 
-            iyz="0.0" 
-            izz="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
+            <origin xyz="0 0 ${link_three_length/2}" rpy="0 0 0"/>
+            <mass value="${link_three_mass}"/>
+            <inertia 
+                ixx="${(1/12) * link_three_mass * (link_two_thickness*link_two_thickness + link_three_length*link_three_length)}" 
+                ixy="0.0" 
+                ixz="0.0" 
+                iyy="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_three_length*link_three_length)}" 
+                iyz="0.0" 
+                izz="${(1/12) * link_three_mass * (link_two_width*link_two_width + link_two_thickness*link_two_thickness)}"/>
         </inertial>
-
-
     </link>
 
     <joint name="link_three_joint" type="revolute">
@@ -239,16 +237,11 @@
     </joint>
 
    <link name="link_four">
-        <!-- Define local properties for box dimensions based on cylinder mapping -->
-        <!-- Map diameter (2*radius) to Box Width/Depth to keep horizontal size -->
         <xacro:property name="l4_box_width" value= "0.05"/>
         <xacro:property name="l4_box_depth" value="0.07" />
-        <!-- Map length to Box Height -->
         <xacro:property name="l4_box_height" value="${link_one_base_length / 2.0}" />
-
         <visual>
             <geometry>
-                <!-- Changed from cylinder to box -->
                 <box size="${l4_box_width} ${l4_box_depth} ${l4_box_height}"/>
             </geometry>
             <material name='white'/>
@@ -256,7 +249,6 @@
         </visual>
         <collision>
             <geometry>
-                <!-- Changed from cylinder to box -->
                 <box size="${l4_box_width} ${l4_box_depth} ${l4_box_height}"/>
             </geometry>
             <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -264,7 +256,6 @@
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="${link_four_mass}"/>
-            <!-- Updated inertia calculations for a standard rectangular prism -->
             <inertia 
                 ixx="${(1/12) * link_four_mass * (l4_box_depth**2 + l4_box_height**2)}" 
                 ixy="0.0" ixz="0.0" 
@@ -354,28 +345,72 @@
             <geometry>
                 <box size="0.01 0.01 0.01" />
                 <material name="blue"/>
-                <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
             </geometry>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+
         </visual>
+        <collision>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            <mass value="0.01" />
+            <inertia ixx="0.000000167" ixy="0.0" ixz="0.0" 
+                    iyy="0.000000167" iyz="0.0" 
+                    izz="0.000000167" />
+    </inertial>
     </link>
     <joint name="camera_gripper_joint" type="fixed">
         <parent link="link_four" />
         <child link="camera_gripper_link" />
         <origin xyz="${-l4_box_width/2-0.01/2} 0 0" rpy="0 0 0"/>
     </joint>
+
     <link name="torch_gripper_link">
         <visual>
             <geometry>
                 <box size="0.01 0.01 0.01" />
                 <material name="blue"/>
-                <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
             </geometry>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+
         </visual>
+        <collision>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            <geometry>
+                <box size="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+
+        <inertial>
+            <origin xyz="${0.01/2} ${0.01/2} 0" rpy="0 0 0" />
+            <mass value="0.01" />
+            <inertia ixx="0.000000167" ixy="0.0" ixz="0.0" 
+                    iyy="0.000000167" iyz="0.0" 
+                    izz="0.000000167" />
+        </inertial>
     </link>
+
+
     <joint name="torch_gripper_joint" type="fixed">
         <parent link="link_four" />
         <child link="torch_gripper_link" />
         <origin xyz="${-l4_box_width/2+0.01} 0 ${l4_box_height}" rpy="0 0 0"/>
     </joint>
- 
+<gazebo reference="link_one">
+    <material>Gazebo/Grey</material>
+</gazebo>
+<gazebo reference="link_two">
+    <material>Gazebo/Blue</material>
+</gazebo>
+<gazebo reference="link_three">
+    <material>Gazebo/Red</material>
+</gazebo>
+<gazebo reference="link_four">
+    <material>Gazebo/White</material>
+</gazebo>
 </robot>

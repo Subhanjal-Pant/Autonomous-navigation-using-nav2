@@ -1,5 +1,8 @@
 pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
 pkill -9 gzserver; pkill -9 gzclient; pkill -9 rviz2; pkill -9 robot_state_publisher
+pkill -9 gzserver gzclient
+pkill -9 "gzserver|gzclient"
+pkill -9 gzserver; pkill -9 gzclient
 rm -rf log build install
 colcon build --symlink-install
 source install/setup.bash
