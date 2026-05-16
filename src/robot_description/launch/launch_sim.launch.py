@@ -2,11 +2,13 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 import xacro
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetRemap
 # Gazebo related imports
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+
+
 
 def generate_launch_description():
     pkg_path = get_package_share_directory('robot_description')
@@ -17,8 +19,9 @@ def generate_launch_description():
     gazebo_world_path_minimal = os.path.join(pkg_path, 'worlds', 'minimal_world')
     slam_toolbox_config = os.path.join(pkg_path, 'config', 'mapper_params_online_async.yaml')
     map_file_path = os.path.join(pkg_path, 'maps', 'map_save.yaml')
-
+    twist_mux_config = os.path.join(pkg_path, 'config', 'twist_mux.yaml')
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    nav2_params_path = os.path.join(pkg_path, 'config', 'nav2_params.yaml')
 
 
     # print(gazebo_world_path)
@@ -94,13 +97,13 @@ def generate_launch_description():
         name="teleop_node",
         prefix="xterm -e", 
         parameters=[{
-            'stamped':True,
+            'stamped':False,
             'frame_id':'base_link',
             'speed': 0.3,
             'turn':0.5,
             'repeat_rate':10.0
         }],
-        remappings=[('/cmd_vel', '/diff_cont/cmd_vel')]
+        remappings=[('/cmd_vel', '/cmd_vel_teleop')]
     )
     gazebo_world = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
@@ -119,7 +122,14 @@ def generate_launch_description():
         'use_sim_time': use_sim_time
     }.items()
     )
-
+    twist_mux_node = Node(
+        package='twist_mux',
+        executable='twist_mux',
+        name='twist_mux',
+        output='screen',
+        parameters=[twist_mux_config, {'use_sim_time': use_sim_time}],
+        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel')]
+    )
 # pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
 # ros2 run nav2_map_server map_server --ros-args -p yaml_filename:map_save.yaml -p use_sim_time:=true
     lifecycle_manager_node = Node(
@@ -151,6 +161,22 @@ def generate_launch_description():
         output='screen',
         parameters=[{'use_sim_time': use_sim_time}]
     )
+    # Wrap the IncludeLaunchDescription inside a GroupAction to handle remappings properly
+    nav2_navigation_node = GroupAction(
+        actions=[
+            SetRemap(src='/cmd_vel', dst='/cmd_vel_nav'),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    os.path.join(get_package_share_directory('nav2_bringup'), 'launch', 'navigation.launch.py')
+                ]),
+                launch_arguments={
+                    'use_sim_time': use_sim_time,
+                    'params_file': nav2_params_path,
+                    'autostart': 'true'
+                }.items()
+            )
+        ]
+    )
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -163,6 +189,7 @@ def generate_launch_description():
         # arm_spawner,
         teleop_node,
         gazebo_world,
+        twist_mux_node,
         # slam_toolbox_node,
         lifecycle_manager_node,
         map_server_node,

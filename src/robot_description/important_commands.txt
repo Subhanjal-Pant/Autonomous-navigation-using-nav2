@@ -1,6 +1,7 @@
 pkill -9 -f "gzserver|gzclient|rviz2|robot_state_publisher"
 rm -rf log build install
 colcon build --symlink-install
+source /opt/ros/humble/setup.bash
 source install/setup.bash
 sleep 3
 ros2 launch robot_description launch_sim.launch.py
@@ -9,3 +10,4 @@ ros2 launch robot_description launch_sim.launch.py
 
  ros2 run nav2_amcl amcl --ros-args -p use_sim_time:=true
  ros2 run nav2_util lifecycle_bringup amcl
+ ros2 launch nav2_bringup navigation.launch.py
