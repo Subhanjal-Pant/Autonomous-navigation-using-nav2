@@ -36,13 +36,13 @@ diff_cont:
     enable_odom_tf: true
     odom_frame_id: "odom"
     base_frame_id: "base_link"
-arm_controller:
-  ros__parameters:
-    joints:
-      - link_one_joint
-      - link_two_joint
-      - link_three_joint
-      - link_four_joint
-      - left_finger_joint
-      - right_finger_joint
-    interface_name: position
+# arm_controller:
+#   ros__parameters:
+#     joints:
+#       - link_one_joint
+#       - link_two_joint
+#       - link_three_joint
+#       - link_four_joint
+#       - left_finger_joint
+#       - right_finger_joint
+#     interface_name: position

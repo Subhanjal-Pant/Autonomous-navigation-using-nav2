@@ -56,7 +56,7 @@
             </joint>
 
             <!-- For Arm -->
-            <joint name="link_one_joint">
+            <!-- <joint name="link_one_joint">
                 <command_interface name="position"/>
                 <state_interface name="position"/>
                 <state_interface name="velocity"/>
@@ -70,7 +70,7 @@
                 <command_interface name="position"/>
                 <state_interface name="position"/>
                 <state_interface name="velocity"/>
-            </joint>
+            </joint> -->
         </ros2_control>
     </xacro:if>
 

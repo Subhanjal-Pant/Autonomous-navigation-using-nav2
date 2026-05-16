@@ -26,7 +26,10 @@ def generate_launch_description():
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[{'robot_description': robot_description_config}]
+        parameters=[
+            {'robot_description': robot_description_config},
+            {'use_sim_time': use_sim_time}
+            ]
 
     )
     rviz_node = Node(
@@ -127,7 +130,7 @@ def generate_launch_description():
         parameters=[
             {'use_sim_time': True},
             {'autostart': True},
-            {'node_names': ['map_server']}
+            {'node_names': ['map_server', 'amcl']}
         ]
     )
     # ros2 run nav2_util lifecycle_bringup map_server
@@ -136,8 +139,18 @@ def generate_launch_description():
             executable='map_server',
             name='map_server',
             output='screen',
-            parameters=[{'yaml_filename': map_file_path}]
+            parameters=[
+                {'yaml_filename': map_file_path},
+                {'use_sim_time':use_sim_time}
+                ]
         )
+    amcl_node = Node(
+        package='nav2_amcl', 
+        executable='amcl',
+        name='amcl',
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}]
+    )
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -147,10 +160,11 @@ def generate_launch_description():
         spawn_entity,
         joint_broadcaster_spawner,
         diff_drive_spawner,
-        arm_spawner,
+        # arm_spawner,
         teleop_node,
         gazebo_world,
-        slam_toolbox_node,
+        # slam_toolbox_node,
         lifecycle_manager_node,
-        map_server_node
+        map_server_node,
+        amcl_node
     ])
