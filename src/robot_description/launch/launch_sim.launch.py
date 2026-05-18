@@ -4,7 +4,7 @@ from launch import LaunchDescription
 import xacro
 from launch_ros.actions import Node, SetRemap
 # Gazebo related imports
-from launch.actions import IncludeLaunchDescription, GroupAction
+from launch.actions import IncludeLaunchDescription, GroupAction, TimerAction, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 
@@ -96,13 +96,13 @@ def generate_launch_description():
         executable="teleop_twist_keyboard",
         name="teleop_node",
         prefix="xterm -e", 
-        parameters=[{
-            'stamped':False,
-            'frame_id':'base_link',
-            'speed': 0.3,
-            'turn':0.5,
-            'repeat_rate':10.0
-        }],
+        # parameters=[{
+        #     'stamped':False,
+        #     'frame_id':'base_link',-
+        #     'speed': 0.3,
+        #     'turn':0.5,
+        #     'repeat_rate':10.0
+        # }],
         remappings=[('/cmd_vel', '/cmd_vel_teleop')]
     )
     gazebo_world = IncludeLaunchDescription(
@@ -128,7 +128,7 @@ def generate_launch_description():
         name='twist_mux',
         output='screen',
         parameters=[twist_mux_config, {'use_sim_time': use_sim_time}],
-        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel')]
+        remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel_unstamped')]
     )
 # pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
 # ros2 run nav2_map_server map_server --ros-args -p yaml_filename:map_save.yaml -p use_sim_time:=true
@@ -140,7 +140,8 @@ def generate_launch_description():
         parameters=[
             {'use_sim_time': True},
             {'autostart': True},
-            {'node_names': ['map_server', 'amcl']}
+            {'node_names': ['map_server', 'amcl']},
+            {'bond_timeout': 4.0}
         ]
     )
     # ros2 run nav2_util lifecycle_bringup map_server
@@ -151,7 +152,7 @@ def generate_launch_description():
             output='screen',
             parameters=[
                 {'yaml_filename': map_file_path},
-                {'use_sim_time':use_sim_time}
+                {'use_sim_time': use_sim_time}
                 ]
         )
     amcl_node = Node(
@@ -177,6 +178,23 @@ def generate_launch_description():
             )
         ]
     )
+
+    timer_action_node=TimerAction(
+    period = 8.0,
+    actions = [lifecycle_manager_node, map_server_node, amcl_node]
+    )
+    
+    reload_map = TimerAction(
+        period=12.0,
+        actions=[
+            ExecuteProcess(
+                cmd=['ros2', 'service', 'call', '/map_server/load_map',
+                    'nav2_msgs/srv/LoadMap',
+                    '{map_url: \'/new/src/robot_description/maps/map_save.yaml\'}'],
+                output='screen'
+            )
+        ]
+    )
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -191,7 +209,9 @@ def generate_launch_description():
         gazebo_world,
         twist_mux_node,
         # slam_toolbox_node,
-        lifecycle_manager_node,
-        map_server_node,
-        amcl_node
+        # lifecycle_manager_node,
+        # map_server_node,
+        # amcl_node
+        timer_action_node,
+        reload_map
     ])
