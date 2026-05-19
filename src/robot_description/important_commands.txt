@@ -11,3 +11,5 @@ ros2 launch robot_description launch_sim.launch.py
  ros2 run nav2_amcl amcl --ros-args -p use_sim_time:=true
  ros2 run nav2_util lifecycle_bringup amcl
  ros2 launch nav2_bringup navigation.launch.py
+
+ ros2 run tf2_tools view_frames

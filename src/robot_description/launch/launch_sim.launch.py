@@ -43,17 +43,19 @@ def generate_launch_description():
         arguments=['-d', rviz_config_path]
 
     )
+
     joint_state_publisher=Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher'
     )
+
     joint_state_publisher_gui = Node(
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         name='joint_state_publisher_gui'
     )
-    # Spawns the bot in empty world
+
     gazebo_minimal=IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
         launch_arguments={
@@ -61,6 +63,7 @@ def generate_launch_description():
             'world': gazebo_world_path_minimal
         }.items()
     )
+
     spawn_entity=Node(
         package='gazebo_ros',
         executable='spawn_entity.py',
@@ -72,23 +75,24 @@ def generate_launch_description():
                    ],
         output='screen'
     )
+
     joint_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=['joint_broad'],
     )
+
     diff_drive_spawner=Node(
         package="controller_manager",
         executable="spawner",
         arguments=['diff_cont']
     )
+
     arm_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["arm_controller"],
     )   
-
-# Add arm_spawner to your return LaunchDescription([...])
     
     # ros2 run teleop_twist_keyboard teleop_twist_keyboard
     teleop_node=Node(
@@ -195,6 +199,24 @@ def generate_launch_description():
             )
         ]
     )
+
+    nav2_bringup_node = GroupAction(
+        actions=[
+            SetRemap(src='/cmd_vel', dst='/cmd_vel_nav'),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource([
+                    os.path.join(get_package_share_directory('nav2_bringup'), 'launch', 'bringup_launch.py')
+                ]),
+                launch_arguments={
+                    'use_sim_time': use_sim_time,
+                    'map': map_file_path,
+                    'params_file': nav2_params_path,
+                    'autostart': 'true'
+                }.items()
+            )
+        ]
+    )
+
     return LaunchDescription([
         robot_state_publisher,
         rviz_node,
@@ -212,6 +234,7 @@ def generate_launch_description():
         # lifecycle_manager_node,
         # map_server_node,
         # amcl_node
-        timer_action_node,
-        reload_map
+        # timer_action_node,
+        # reload_map
+        nav2_bringup_node
     ])
