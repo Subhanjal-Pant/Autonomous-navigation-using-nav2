@@ -134,38 +134,7 @@ def generate_launch_description():
         parameters=[twist_mux_config, {'use_sim_time': use_sim_time}],
         remappings=[('/cmd_vel_out', '/diff_cont/cmd_vel_unstamped')]
     )
-# pkill -9 gzserver && pkill -9 gzclient && pkill -9 rviz2
-# ros2 run nav2_map_server map_server --ros-args -p yaml_filename:map_save.yaml -p use_sim_time:=true
-    lifecycle_manager_node = Node(
-        package='nav2_lifecycle_manager',
-        executable='lifecycle_manager',
-        name='lifecycle_manager_map_server',
-        output='screen',
-        parameters=[
-            {'use_sim_time': True},
-            {'autostart': True},
-            {'node_names': ['map_server', 'amcl']},
-            {'bond_timeout': 4.0}
-        ]
-    )
-    # ros2 run nav2_util lifecycle_bringup map_server
-    map_server_node= Node(
-            package='nav2_map_server',
-            executable='map_server',
-            name='map_server',
-            output='screen',
-            parameters=[
-                {'yaml_filename': map_file_path},
-                {'use_sim_time': use_sim_time}
-                ]
-        )
-    amcl_node = Node(
-        package='nav2_amcl', 
-        executable='amcl',
-        name='amcl',
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}]
-    )
+ 
     # Wrap the IncludeLaunchDescription inside a GroupAction to handle remappings properly
     nav2_navigation_node = GroupAction(
         actions=[
@@ -183,22 +152,8 @@ def generate_launch_description():
         ]
     )
 
-    timer_action_node=TimerAction(
-    period = 8.0,
-    actions = [lifecycle_manager_node, map_server_node, amcl_node]
-    )
+   
     
-    reload_map = TimerAction(
-        period=12.0,
-        actions=[
-            ExecuteProcess(
-                cmd=['ros2', 'service', 'call', '/map_server/load_map',
-                    'nav2_msgs/srv/LoadMap',
-                    '{map_url: \'/new/src/robot_description/maps/map_save.yaml\'}'],
-                output='screen'
-            )
-        ]
-    )
 
     nav2_bringup_node = GroupAction(
         actions=[
@@ -231,10 +186,9 @@ def generate_launch_description():
         gazebo_world,
         twist_mux_node,
         # slam_toolbox_node,
-        # lifecycle_manager_node,
-        # map_server_node,
-        # amcl_node
-        # timer_action_node,
-        # reload_map
+        
+ 
+   
+
         nav2_bringup_node
     ])

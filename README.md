@@ -10,7 +10,7 @@ A differential drive robot built from scratch in ROS2 and Gazebo, capable of aut
 
 This project implements a complete autonomous navigation pipeline for a simulated differential drive robot. The robot maps an unknown custom environment using SLAM Toolbox, then navigates autonomously to goal poses using the Nav2 stack with AMCL localization and MPPI control.
 
-Everything — the robot URDF, the Gazebo world, the Nav2 configuration — was built from scratch without CAD tools or copied templates.
+Everything in this project, the robot URDF, the Gazebo world, the Nav2 configuration — was built from scratch without CAD tools or copied templates.
 
 ---
 
