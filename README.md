@@ -1,6 +1,6 @@
 # Autonomous Mobile Robot Navigation — ROS2 & Nav2
 
-A differential drive robot built from scratch in ROS2 and Gazebo, capable of autonomous navigation using SLAM-based mapping and the Nav2 navigation stack.
+A differential drive robot simulated in ROS2 and Gazebo, with SLAM-based mapping and autonomous navigation using the Nav2 stack."
 
 [![Demo Video](https://img.youtube.com/vi/y4XCQdMSPc4/0.jpg)](https://youtu.be/y4XCQdMSPc4?si=oFY1qMcEZjCUfGG8)
 
@@ -10,13 +10,13 @@ A differential drive robot built from scratch in ROS2 and Gazebo, capable of aut
 
 This project implements a complete autonomous navigation pipeline for a simulated differential drive robot. The robot maps an unknown custom environment using SLAM Toolbox, then navigates autonomously to goal poses using the Nav2 stack with AMCL localization and MPPI control.
 
-Everything in this project, the robot URDF, the Gazebo world, the Nav2 configuration — was built from scratch without CAD tools or copied templates.
+Designed and built this project independently in ROS2 Humble and Gazebo Classic: the robot URDF, launch files, Gazebo world and Nav2 configuration.
 
 ---
 
 ## Features
 
-- Custom differential drive robot modeled entirely in URDF from scratch
+- Custom differential drive robot modeled in URDF
 - Custom Gazebo simulation environment built with brick wall layouts
 - 2D LiDAR-based SLAM mapping using SLAM Toolbox
 - Autonomous navigation with Nav2 (AMCL localization + NavFn global planner + MPPI local controller)
@@ -137,3 +137,8 @@ This project forms the navigation foundation for an upcoming active perception p
 **Subhanjal Pant**  
 Final Year Mechanical Engineering, Pulchowk Campus, IOE, Tribhuvan University  
 Research Interests: Autonomous Navigation, SLAM, Sensor Fusion, Active Perception
+
+
+## Acknowledgements
+
+I used the [Articulated Robotics](https://www.youtube.com/@ArticulatedRobotics) YouTube channel as a learning reference for ROS2 and Gazebo concepts, and went back to it when I got stuck. The robot model, launch files, world and navigation configuration in this repository are my own work.
